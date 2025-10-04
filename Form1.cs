@@ -17,8 +17,11 @@ namespace Bas_DATSYS_IT505
         public Form1()
         {
             InitializeComponent();
+            lockoutTime = DateTime.Now;
         }
         string connectionString = Database.ConnectionString;
+
+        private DateTime lockoutTime;
 
         private int loginAttempts = 0;
         private const int MAX_ATTEMPTS = 3;
@@ -39,6 +42,14 @@ namespace Bas_DATSYS_IT505
         }
         private void btnSubmit_Click(object sender, EventArgs e)
         {
+            if (DateTime.Now < lockoutTime)
+            {
+                TimeSpan remainingTime = lockoutTime - DateTime.Now;
+                MessageBox.Show($"Maximum login attempts exceeded. Please try again after {remainingTime.Minutes} minutes and {remainingTime.Seconds} seconds.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+
             bool isValid = true;
             string username = txtUsername.Text.Trim();
             string plainPassword = txtPassword.Text.Trim();
@@ -132,8 +143,8 @@ namespace Bas_DATSYS_IT505
 
                         if (loginAttempts >= MAX_ATTEMPTS)
                         {
-                            MessageBox.Show("Maximum login attempts exceeded. The application will now close.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Application.Exit();
+                            lockoutTime = DateTime.Now.AddMinutes(3);
+                            MessageBox.Show($"Maximum login attempts exceeded. You are locked out for 3 minutes.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                         else
                         {
@@ -171,6 +182,13 @@ namespace Bas_DATSYS_IT505
             pbNotVisible.Hide();
             pbVisible.Show();
             txtPassword.UseSystemPasswordChar = false;
+        }
+
+        private void btnForgotPass_Click(object sender, EventArgs e)
+        {
+            EmailConfirmation confirmation = new EmailConfirmation();
+            confirmation.Show();
+            this.Hide();
         }
     }
 }

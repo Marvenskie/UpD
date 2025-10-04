@@ -64,8 +64,10 @@ namespace Bas_DATSYS_IT505
             DateTime hireDate;
             hireDate = dateTimePicker1.Value;
 
+
             string action = "Add Teacher";
             string description = "Added a new teacher";
+            string AddName = txtfirstName.Text + " " + txtlastName.Text;
 
             bool requiredFieldsMissing = false;
 
@@ -167,6 +169,7 @@ namespace Bas_DATSYS_IT505
                     cmd.Parameters.AddWithValue("@HiredDate", hireDate);
                     cmd.Parameters.AddWithValue("@Action", action);
                     cmd.Parameters.AddWithValue("@Description", description);
+                    cmd.Parameters.AddWithValue("@AddName", AddName);
 
 
                     cmd.ExecuteNonQuery();
@@ -184,6 +187,7 @@ namespace Bas_DATSYS_IT505
             {
                 MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
 
         }
 

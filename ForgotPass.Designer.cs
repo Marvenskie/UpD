@@ -34,8 +34,6 @@
             this.txtConfirmPass = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.txtNewPass = new System.Windows.Forms.TextBox();
-            this.txtOldPass = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.btnCongirmPass = new System.Windows.Forms.Button();
@@ -60,7 +58,7 @@
             // 
             // txtConfirmPass
             // 
-            this.txtConfirmPass.Location = new System.Drawing.Point(214, 268);
+            this.txtConfirmPass.Location = new System.Drawing.Point(214, 239);
             this.txtConfirmPass.Name = "txtConfirmPass";
             this.txtConfirmPass.Size = new System.Drawing.Size(238, 20);
             this.txtConfirmPass.TabIndex = 1;
@@ -79,29 +77,10 @@
             // 
             // txtNewPass
             // 
-            this.txtNewPass.Location = new System.Drawing.Point(214, 226);
+            this.txtNewPass.Location = new System.Drawing.Point(214, 191);
             this.txtNewPass.Name = "txtNewPass";
             this.txtNewPass.Size = new System.Drawing.Size(238, 20);
             this.txtNewPass.TabIndex = 3;
-            // 
-            // txtOldPass
-            // 
-            this.txtOldPass.Location = new System.Drawing.Point(214, 185);
-            this.txtOldPass.Name = "txtOldPass";
-            this.txtOldPass.Size = new System.Drawing.Size(238, 20);
-            this.txtOldPass.TabIndex = 4;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.DimGray;
-            this.label2.Location = new System.Drawing.Point(211, 167);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(81, 15);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "Old Password";
             // 
             // label3
             // 
@@ -109,7 +88,7 @@
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.DimGray;
-            this.label3.Location = new System.Drawing.Point(211, 208);
+            this.label3.Location = new System.Drawing.Point(211, 173);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(88, 15);
             this.label3.TabIndex = 6;
@@ -121,7 +100,7 @@
             this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.DimGray;
-            this.label4.Location = new System.Drawing.Point(211, 250);
+            this.label4.Location = new System.Drawing.Point(211, 221);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(107, 15);
             this.label4.TabIndex = 7;
@@ -133,7 +112,7 @@
             this.btnCongirmPass.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCongirmPass.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCongirmPass.ForeColor = System.Drawing.Color.White;
-            this.btnCongirmPass.Location = new System.Drawing.Point(276, 300);
+            this.btnCongirmPass.Location = new System.Drawing.Point(276, 283);
             this.btnCongirmPass.Name = "btnCongirmPass";
             this.btnCongirmPass.Size = new System.Drawing.Size(115, 41);
             this.btnCongirmPass.TabIndex = 8;
@@ -158,8 +137,6 @@
             this.Controls.Add(this.btnCongirmPass);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.txtOldPass);
             this.Controls.Add(this.txtNewPass);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtConfirmPass);
@@ -182,8 +159,6 @@
         private System.Windows.Forms.TextBox txtConfirmPass;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtNewPass;
-        private System.Windows.Forms.TextBox txtOldPass;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button btnCongirmPass;

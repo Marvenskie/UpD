@@ -20,10 +20,11 @@ namespace Bas_DATSYS_IT505
             InitializeComponent();
            
         }
-        string connectionString = @"Data Source=LAB4-PC48\LAB2PC45; Initial Catalog=BAS_DB; Integrated Security=true";
+        string connectionString = @"Data Source=DESKTOP-154LG8I; Initial Catalog=DB_Bas; Integrated Security=true";
         string cmb;
         string mailPattern = @"^[\w\.-]+@gmail\.com$";
         string phonePattern = @"^(?:\+63|0)?9\d{9}$";
+        string agePattern = @"^(1[0-9]{2}|[1-9]?[0-9])$";
 
         private string HashPassword(string plainPassword)
         {
@@ -38,51 +39,70 @@ namespace Bas_DATSYS_IT505
             }
         }
 
-        public static bool IsValidPhoneNumber(string phone, string pattern)
+        public static bool IsValid(string input, string pattern)
         {
-            return Regex.IsMatch(phone, pattern);
+            return Regex.IsMatch(input, pattern);
         }
 
-        public static bool IsValidGmail(string email, string pattern)
-        {
-            return Regex.IsMatch(email, pattern);
-        }
+        
 
 
 
         private void btnSubmit2_Click(object sender, EventArgs e)
         {
-            int age;
+            errorProvider1.Clear();
+            errorProvider2.Clear();
+            errorProvider3.Clear();
+            errorProvider4.Clear();
+            errorProvider5.Clear();
+            errorProvider6.Clear();
+            errorProvider7.Clear();
+
+
+            string age = txtAge.Text;
             string phone = txtPhoneNo.Text;
             string email = txtEmail.Text;
-            DateTime dateTime;
-            dateTime = dateTimePicker1.Value;
 
 
-            if (string.IsNullOrWhiteSpace(txtFirstname.Text) || string.IsNullOrWhiteSpace(txtLastname.Text) ||
-               string.IsNullOrWhiteSpace(txtEmail.Text))
+            bool requiredFieldsMissing = false;
+
+            if (string.IsNullOrWhiteSpace(txtFirstname.Text)) { errorProvider1.SetError(txtFirstname, "First name is required."); requiredFieldsMissing = true; }
+            if (string.IsNullOrWhiteSpace(txtLastname.Text)) { errorProvider2.SetError(txtLastname, "Last name is required."); requiredFieldsMissing = true; }
+            if (string.IsNullOrWhiteSpace(cmbGender.Text)) { errorProvider3.SetError(cmbGender, "Gender is required."); requiredFieldsMissing = true; }
+            if (string.IsNullOrWhiteSpace(txtAge.Text)) { errorProvider4.SetError(txtAge, "Age is required."); requiredFieldsMissing = true; }
+            if (string.IsNullOrWhiteSpace(txtPhoneNo.Text)) { errorProvider5.SetError(txtPhoneNo, "Phone number is required."); requiredFieldsMissing = true; }
+            if (string.IsNullOrWhiteSpace(txtAddress.Text)) { errorProvider6.SetError(txtAddress, "Address is required."); requiredFieldsMissing = true; }
+            if (string.IsNullOrWhiteSpace(txtEmail.Text)) { errorProvider7.SetError(txtEmail, "Email is required."); requiredFieldsMissing = true; }
+
+            if (requiredFieldsMissing)
             {
-                MessageBox.Show("Please fill in all required fields.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (!IsValidGmail(email, mailPattern))
-            {
-                MessageBox.Show("Please enter a valid email format", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-
-            if (!int.TryParse(txtAge.Text, out age))
-            {
-                MessageBox.Show("Please enter a valid age.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
 
-            if (!IsValidPhoneNumber(phone, phonePattern))
+
+            bool allValid = true;
+
+            if (!IsValid(email, mailPattern))
             {
-                MessageBox.Show("Please enter a vaild phone number.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                errorProvider7.SetError(txtEmail, "Please enter a valid Email.");
+                allValid = false;
+            }
+
+            if (!IsValid(phone, phonePattern))
+            {
+                errorProvider5.SetError(txtPhoneNo, "Please enter a valid Phone number.");
+                allValid = false;
+            }
+
+            if (!IsValid(age, agePattern))
+            {
+                errorProvider4.SetError(txtAge, "Age is in invalid format.");
+                allValid = false;
+            }
+
+            if (!allValid)
+            {
                 return;
             }
 
@@ -101,6 +121,8 @@ namespace Bas_DATSYS_IT505
                 cmb += cmbGender.Text;
             }
 
+
+
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
 
@@ -113,7 +135,7 @@ namespace Bas_DATSYS_IT505
 
                 if (userCount > 0)
                 {
-                    MessageBox.Show("This email is already registered. Please use a different one.", "Registration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("This email address is already in use by another user.", "Email Conflict", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -128,13 +150,12 @@ namespace Bas_DATSYS_IT505
 
                 cmd.Parameters.AddWithValue("@firstname", txtFirstname.Text);
                 cmd.Parameters.AddWithValue("@lastname", txtLastname.Text);
-                cmd.Parameters.AddWithValue("@age", age);
+                cmd.Parameters.AddWithValue("@age", txtAge.Text);
                 cmd.Parameters.AddWithValue("@gender", cmb);
                 cmd.Parameters.AddWithValue("@phone", txtPhoneNo.Text);
                 cmd.Parameters.AddWithValue("@address", txtAddress.Text);
                 cmd.Parameters.AddWithValue("@email", txtEmail.Text);
                 cmd.Parameters.AddWithValue("@Username", generatedUserID);
-                cmd.Parameters.AddWithValue("@EnrollmentDate", dateTime);
                 cmd.Parameters.AddWithValue("@HashedPassword", hashedPassword);
 
 
@@ -143,9 +164,11 @@ namespace Bas_DATSYS_IT505
                                 "\n Password: " + generatedPassword +
                                 "\n Please wait for the admin's approval.",
                                 "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                Form1 login = new Form1();
+                login.Show();
+                this.Hide();
             }
-
-
         }
 
         private void button1_Click(object sender, EventArgs e)

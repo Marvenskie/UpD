@@ -81,6 +81,10 @@ namespace Bas_DATSYS_IT505
             errorProvider4.Clear();
             errorProvider5.Clear();
 
+            string action = "Add Subject";
+            string description = "Added a new subject";
+            string AddName = txtCourse.Text;
+
 
             bool requiredFieldsMissing = false;
 
@@ -115,6 +119,9 @@ namespace Bas_DATSYS_IT505
                 cmd.Parameters.AddWithValue("@Teacher", cmbTeacherAssigned.Text);
                 cmd.Parameters.AddWithValue("@Department", cmbDepartment.Text);
                 cmd.Parameters.AddWithValue("@Status", status);
+                cmd.Parameters.AddWithValue("@Action", action);
+                cmd.Parameters.AddWithValue("@AddDescription", description);
+                cmd.Parameters.AddWithValue("@AddName", AddName);
 
 
                 cmd.ExecuteNonQuery();

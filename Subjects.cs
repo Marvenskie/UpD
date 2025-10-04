@@ -20,6 +20,8 @@ namespace Bas_DATSYS_IT505
             dgvSubjects.CellBorderStyle = DataGridViewCellBorderStyle.Single;
             LoadCourses();
             dgvSubjects.DefaultCellStyle.ForeColor = Color.Black;
+
+
             DataTable departmentsData = DatabaseManager.GetDepartments();
             cmbDepartment.DataSource = departmentsData;
             cmbDepartment.DisplayMember = "DepartmentName";
@@ -30,8 +32,9 @@ namespace Bas_DATSYS_IT505
 
         private void LoadCourses()
         {
-            string sqlQuery_TotalCount = "SELECT COUNT(*)FROM Courses " +
-                "WHERE Status = 'Active'";
+            string sqlQuery_TotalSubjectCount = "SELECT COUNT(CourseID)" +
+                                                "FROM Courses " +
+                                                "WHERE Status = 'Active'";
 
             string sqlQuery = "SELECT c.CourseID, c.CourseName, c.CourseCode, c.Description, c.Credits, " +
                               "p.FirstName, p.LastName, d.DepartmentName, c.Status " +
@@ -46,18 +49,17 @@ namespace Bas_DATSYS_IT505
             {
                 try
                 {
-
                     conn.Open();
 
-                    SqlCommand countCmd = new SqlCommand(sqlQuery_TotalCount, conn);
-                    int activeTeacherCount = (int)countCmd.ExecuteScalar();
-                    lblNumOfSubjects.Text = activeTeacherCount.ToString();
+                    SqlCommand countSubjectcmd = new SqlCommand(sqlQuery_TotalSubjectCount, conn);
+                    int SubjectCount = (int)countSubjectcmd.ExecuteScalar();
+                    lblNumOfSubjects.Text = SubjectCount.ToString();
 
                     SqlDataAdapter dataAdapter = new SqlDataAdapter(sqlQuery, conn);
                     DataTable dataTable = new DataTable();
                     dataAdapter.Fill(dataTable);
 
-                     dgvSubjects.DataSource = dataTable;
+                    dgvSubjects.DataSource = dataTable;
                     SetupCoursesDataGridView();
                 }
                 catch (Exception ex)
@@ -224,6 +226,11 @@ namespace Bas_DATSYS_IT505
 
                     if (rowsAffected > 0)
                     {
+
+                        string LogName = txtCourse.Text;
+                        string logDescription = $"Updated a subject.";
+                        AddLogEntry(LogName, "Update Subject", logDescription);
+
                         MessageBox.Show("Course details updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadCourses();
 
@@ -243,44 +250,7 @@ namespace Bas_DATSYS_IT505
 
 
         private string selectedCourseId;
-        private void dgvSubjects_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0)
-            {
-                DataGridViewRow row = dgvSubjects.Rows[e.RowIndex];
-
-                selectedCourseId = row.Cells["CourseID"].Value.ToString();
-
-                string courseName = row.Cells["CourseName"].Value.ToString();
-                string courseCode = row.Cells["CourseCode"].Value.ToString();
-                string credits = row.Cells["Credits"].Value.ToString();
-                string description = row.Cells["Description"].Value.ToString();
-                string department = row.Cells["DepartmentName"].Value.ToString();
-                string instructor = row.Cells["InstructorName"].Value.ToString();
-
-                txtCourse.Text = courseName;
-                txtCourseCode.Text = courseCode;
-                cmbCredits.Text = credits;
-                txtDescription.Text = description;
-
-                cmbDepartment.SelectedIndexChanged -= cmbDepartment_SelectedIndexChanged;
-                cmbDepartment.SelectedIndex = cmbDepartment.FindStringExact(department);
-                cmbDepartment.SelectedIndexChanged += cmbDepartment_SelectedIndexChanged;
-
-                if (cmbDepartment.SelectedValue != null)
-                {
-                    int selectedDepartmentID = Convert.ToInt32(cmbDepartment.SelectedValue);
-
-                    DataTable instructorsData = DatabaseManager.GetInstructorsByDepartment(selectedDepartmentID);
-                    cmbTeacherAssigned.DataSource = instructorsData;
-                    cmbTeacherAssigned.DisplayMember = "FullName";
-                    cmbTeacherAssigned.ValueMember = "InstructorID";
-                }
-
-                cmbTeacherAssigned.SelectedIndex = cmbTeacherAssigned.FindStringExact(instructor);
-            }
-
-        }
+        
         public static class DatabaseManager
         {
             public static DataTable GetDepartments()
@@ -321,6 +291,7 @@ namespace Bas_DATSYS_IT505
                 {
                     using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                     {
+                        // Add the parameter to the command to prevent SQL injection
                         command.Parameters.AddWithValue("@DepartmentID", departmentID);
                         connection.Open();
                         SqlDataAdapter dataAdapter = new SqlDataAdapter(command);
@@ -382,6 +353,11 @@ namespace Bas_DATSYS_IT505
 
                 if (result == DialogResult.Yes)
                 {
+
+                    string LogName = txtCourse.Text;
+                    string logDescription = $"Deleted a subject.";
+                    AddLogEntry(LogName, "Delete Subject", logDescription);
+
                     DeleteCourse(courseID);
 
                     LoadCourses();
@@ -455,5 +431,72 @@ namespace Bas_DATSYS_IT505
                 this.Close();
             }
         }
+
+        private void dgvSubjects_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow row = dgvSubjects.Rows[e.RowIndex];
+
+                selectedCourseId = row.Cells["CourseID"].Value.ToString();
+
+                string courseName = row.Cells["CourseName"].Value.ToString();
+                string courseCode = row.Cells["CourseCode"].Value.ToString();
+                string credits = row.Cells["Credits"].Value.ToString();
+                string description = row.Cells["Description"].Value.ToString();
+                string department = row.Cells["DepartmentName"].Value.ToString();
+                string instructor = row.Cells["InstructorName"].Value.ToString();
+
+                txtCourse.Text = courseName;
+                txtCourseCode.Text = courseCode;
+                cmbCredits.Text = credits;
+                txtDescription.Text = description;
+
+                cmbDepartment.SelectedIndexChanged -= cmbDepartment_SelectedIndexChanged;
+                cmbDepartment.SelectedIndex = cmbDepartment.FindStringExact(department);
+                cmbDepartment.SelectedIndexChanged += cmbDepartment_SelectedIndexChanged;
+
+                if (cmbDepartment.SelectedValue != null)
+                {
+                    int selectedDepartmentID = Convert.ToInt32(cmbDepartment.SelectedValue);
+
+                    DataTable instructorsData = DatabaseManager.GetInstructorsByDepartment(selectedDepartmentID);
+                    cmbTeacherAssigned.DataSource = instructorsData;
+                    cmbTeacherAssigned.DisplayMember = "FullName";
+                    cmbTeacherAssigned.ValueMember = "InstructorID";
+                }
+
+                cmbTeacherAssigned.SelectedIndex = cmbTeacherAssigned.FindStringExact(instructor);
+            }
+        }
+
+
+
+        private void AddLogEntry(string name, string action, string description)
+        {
+
+            string sqlQuery = "INSERT INTO Logs (Name, Action, Description) VALUES (@name, @action, @description)";
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(sqlQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@name", name);
+                    cmd.Parameters.AddWithValue("@action", action);
+                    cmd.Parameters.AddWithValue("@description", description);
+
+                    try
+                    {
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error logging action: " + ex.Message);
+                    }
+                }
+            }
+        }
+
     }
 }

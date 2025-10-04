@@ -64,6 +64,7 @@ namespace Bas_DATSYS_IT505
             enrollDate = dateTimePicker1.Value;
             string action = "Add Student";
             string description = "Added a new student";
+            string AddName = txtfirstName.Text + " " + txtlastName.Text;
 
 
             bool requiredFieldsMissing = false;
@@ -163,6 +164,7 @@ namespace Bas_DATSYS_IT505
                     cmd.Parameters.AddWithValue("@EnrollmentDate", enrollDate);
                     cmd.Parameters.AddWithValue("@Action", action);
                     cmd.Parameters.AddWithValue("@Description", description);
+                    cmd.Parameters.AddWithValue("@AddName", AddName);
 
 
                     cmd.ExecuteNonQuery();

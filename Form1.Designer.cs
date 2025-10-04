@@ -159,6 +159,7 @@
             this.btnForgotPass.Size = new System.Drawing.Size(84, 12);
             this.btnForgotPass.TabIndex = 4;
             this.btnForgotPass.Text = "Forgot Password?";
+            this.btnForgotPass.Click += new System.EventHandler(this.btnForgotPass_Click);
             // 
             // pbNotVisible
             // 

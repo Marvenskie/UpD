@@ -45,8 +45,8 @@ namespace Bas_DATSYS_IT505
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            ForgotPass forgotEmailValidation = new ForgotPass();
-            forgotEmailValidation.Show();
+            Form1 form1 = new Form1();
+            form1.Show();
             this.Hide();
         }
 

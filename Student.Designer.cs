@@ -243,7 +243,6 @@
             this.dgvStudents.Size = new System.Drawing.Size(893, 184);
             this.dgvStudents.TabIndex = 25;
             this.dgvStudents.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvStudents_CellClick);
-            this.dgvStudents.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvStudents_CellContentClick);
             // 
             // label4
             // 

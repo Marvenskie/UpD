@@ -217,31 +217,6 @@ namespace Bas_DATSYS_IT505
             pnlUpdStud.Show();
         }
 
-        private void AddLogEntry(int profileID, string action, string description)
-        {
-
-            string sqlQuery = "INSERT INTO Logs (ProfileID, Action, Description) VALUES (@profileId, @action, @description)";
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                using (SqlCommand cmd = new SqlCommand(sqlQuery, conn))
-                {
-                    cmd.Parameters.AddWithValue("@profileId", profileID);
-                    cmd.Parameters.AddWithValue("@action", action);
-                    cmd.Parameters.AddWithValue("@description", description);
-
-                    try
-                    {
-                        conn.Open();
-                        cmd.ExecuteNonQuery();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Error logging action: " + ex.Message);
-                    }
-                }
-            }
-        }
 
        
 
@@ -291,6 +266,10 @@ namespace Bas_DATSYS_IT505
 
                     if (confirmResult == DialogResult.Yes)
                     {
+                        string LogName = txtFirstnamE.Text + " " + txtLastnamE.Text;
+                        string logDescription = $"Deleted a student.";
+                        AddLogEntry(LogName, "Delete Student", logDescription);
+
                         string newStatus = "Inactive";
                         UpdateUserStatus(profileID, newStatus);
 
@@ -344,33 +323,7 @@ namespace Bas_DATSYS_IT505
             }
         }
 
-        private void dgvStudents_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0)
-            {
-                DataGridViewRow row = dgvStudents.Rows[e.RowIndex];
-
-                selectedProfileId = row.Cells["ProfileID"].Value.ToString();
-
-                string firstName = row.Cells["FirstName"].Value.ToString();
-                string lastName = row.Cells["LastName"].Value.ToString();
-                string age = row.Cells["Age"].Value.ToString();
-                string gender = row.Cells["Gender"].Value.ToString();
-                string phone = row.Cells["Phone"].Value.ToString();
-                string address = row.Cells["Address"].Value.ToString();
-                string email = row.Cells["Email"].Value.ToString();
-
-                txtFirstnamE.Text = firstName;
-                txtLastnamE.Text = lastName;
-                txtAgE.Text = age;
-                txtPhoneNUM.Text = phone;
-                txtAddrEss.Text = address;
-                txtEAddress.Text = email;
-
-                cmbGendEr.Text = gender;
-            }
-
-        }
+       
         string mailPattern = @"^[\w\.-]+@gmail\.com$";
         string phonePattern = @"^(?:\+63|0)?9\d{9}$";
         string agePattern = @"^(1[0-9]{2}|[1-9]?[0-9])$";
@@ -489,6 +442,7 @@ namespace Bas_DATSYS_IT505
                 }
 
 
+
                 string simpleUpdateQuery =
                                     "UPDATE Profiles SET " +
                                     "FirstName = @firstName, " +
@@ -518,9 +472,17 @@ namespace Bas_DATSYS_IT505
 
                         if (rowsAffected > 0)
                         {
+
+
+                            string LogName = txtFirstnamE.Text + " " + txtLastnamE.Text;
+                            string logDescription = $"Updated a student.";
+                            AddLogEntry(LogName, "Update Student", logDescription);
+
                             MessageBox.Show("Student profile updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             LoadData();
                             pnlUpdStud.Visible = false;
+
+
 
                         }
                         else
@@ -597,6 +559,33 @@ namespace Bas_DATSYS_IT505
             this.Hide();
             Approval approval = new Approval();
             approval.Show();
+        }
+
+
+        private void AddLogEntry(string Name, string action, string description)
+        {
+
+            string sqlQuery = "INSERT INTO Logs (Name, Action, Description) VALUES (@Name, @action, @description)";
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(sqlQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Name", Name);
+                    cmd.Parameters.AddWithValue("@action", action);
+                    cmd.Parameters.AddWithValue("@description", description);
+
+                    try
+                    {
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error logging action: " + ex.Message);
+                    }
+                }
+            }
         }
     }
 }

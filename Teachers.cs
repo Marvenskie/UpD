@@ -557,7 +557,7 @@ namespace Bas_DATSYS_IT505
             {
                 DataGridViewRow row = dgvTeachers.Rows[e.RowIndex];
 
-                selectedProfileId = row.Cells["ProfileID"].Value.ToString();
+                selectedInstructorId = row.Cells["InstructorID"].Value.ToString();
 
                 string firstName = row.Cells["FirstName"].Value.ToString();
                 string lastName = row.Cells["LastName"].Value.ToString();
@@ -579,31 +579,7 @@ namespace Bas_DATSYS_IT505
             }
         }
 
-        private void AddLogEntry(int profileID, string action, string description)
-        {
-
-            string sqlQuery = "INSERT INTO Logs (ProfileID, Action, Description) VALUES (@profileId, @action, @description)";
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                using (SqlCommand cmd = new SqlCommand(sqlQuery, conn))
-                {
-                    cmd.Parameters.AddWithValue("@profileId", profileID);
-                    cmd.Parameters.AddWithValue("@action", action);
-                    cmd.Parameters.AddWithValue("@description", description);
-
-                    try
-                    {
-                        conn.Open();
-                        cmd.ExecuteNonQuery();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Error logging action: " + ex.Message);
-                    }
-                }
-            }
-        }
+        
 
         private void btnApproval_Click(object sender, EventArgs e)
         {

@@ -25,10 +25,10 @@ namespace Bas_DATSYS_IT505
         private void LoadData()
         {
             string sqlQuery_TotalCount = "SELECT COUNT(p.ProfileID) " +
-                                 "FROM Profiles AS p " +
-                                 "INNER JOIN Users AS u ON p.ProfileID = u.ProfileID " +
-                                 "INNER JOIN Roles AS r ON u.RoleID = r.RoleID " +
-                                 "WHERE r.RoleName = 'Student' AND p.Status = 'Pending'";
+                                  "FROM Profiles AS p " +
+                                  "INNER JOIN Users AS u ON p.ProfileID = u.ProfileID " +
+                                  "INNER JOIN Roles AS r ON u.RoleID = r.RoleID " +
+                                  "WHERE r.RoleName = 'Student' AND p.Status = 'Pending'";
 
             string sqlQuery_LoadData = "SELECT p.ProfileID, p.FirstName, p.LastName, p.Age, p.Gender, p.Phone, p.Address, p.Email, ISNULL(p.Status, 'Unknown') AS Status " +
                                        "FROM Profiles AS p " +
@@ -139,16 +139,21 @@ namespace Bas_DATSYS_IT505
 
         private void dgvPending_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && dgvPending.Columns[e.ColumnIndex].Name == "StatusActionButton")
+            DateTime enrollmentDate = DateTime.Today;
+
+            if (e.RowIndex >= 0 && dgvPending.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
+                dgvPending.Columns[e.ColumnIndex].Name == "StatusActionButton")
             {
                 DataGridViewRow row = dgvPending.Rows[e.RowIndex];
+
                 string profileId = row.Cells["ProfileID"].Value.ToString();
                 string currentStatus = row.Cells["Status"].Value.ToString();
                 string newStatus = string.Empty;
 
                 if (currentStatus.Equals("Pending", StringComparison.OrdinalIgnoreCase))
                 {
-                    DialogResult result = MessageBox.Show($"Do you want to activate this student?", "Approve Student", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    DialogResult result = MessageBox.Show("Do you want to activate this student?", "Approve Student", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
                     if (result == DialogResult.Yes)
                     {
                         newStatus = "Active";
@@ -159,38 +164,48 @@ namespace Bas_DATSYS_IT505
                     }
                 }
 
-                if (!string.IsNullOrEmpty(newStatus))
+                if (string.IsNullOrEmpty(newStatus))
                 {
+                    return;
+                }
 
-                    using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    try
                     {
-                        try
+                        conn.Open();
+
+                        string updateQuery = "UPDATE Profiles SET Status = @newStatus WHERE ProfileID = @profileId";
+                        using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
                         {
-                            conn.Open();
-                            string updateQuery = "UPDATE Profiles SET Status = @newStatus WHERE ProfileID = @profileId";
-                            using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
+                            cmd.Parameters.AddWithValue("@newStatus", newStatus);
+                            cmd.Parameters.AddWithValue("@profileId", profileId);
+
+                            int rowsAffected = cmd.ExecuteNonQuery();
+
+                            if (rowsAffected > 0)
                             {
-                                cmd.Parameters.AddWithValue("@newStatus", newStatus);
-                                cmd.Parameters.AddWithValue("@profileId", profileId);
-
-                                int rowsAffected = cmd.ExecuteNonQuery();
-
-                                if (rowsAffected > 0)
+                                string insertStudentQuery = "INSERT INTO Students (ProfileID, EnrollmentDate) VALUES (@profileId, @enrollmentDate)";
+                                using (SqlCommand insertCmd = new SqlCommand(insertStudentQuery, conn))
                                 {
-                                    MessageBox.Show($"Successfully updated status to '{newStatus}'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    insertCmd.Parameters.AddWithValue("@profileId", profileId);
+                                    insertCmd.Parameters.AddWithValue("@enrollmentDate", enrollmentDate);
 
-                                    LoadData();
+                                    insertCmd.ExecuteNonQuery();
                                 }
-                                else
-                                {
-                                    MessageBox.Show("No rows were affected. The update may have failed.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                }
+
+                                MessageBox.Show($"Successfully updated to '{newStatus}' and enrolled.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                LoadData();
+                            }
+                            else
+                            {
+                                MessageBox.Show("No rows were affected. The update may have failed.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("An error occurred while updating the database: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("An error occurred while updating the database: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }

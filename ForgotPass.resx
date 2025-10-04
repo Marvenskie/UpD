@@ -128,10 +128,13 @@
   <metadata name="errorProvider1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>25</value>
+  </metadata>
   <data name="$this.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAApoAAAHNCAYAAAC+b9stAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wAAADsABataJCQAADslJREFUeF7t3cuO1dYCRVH+/w95CAhI4aEIqCoIolVXvp00YilAsc48UUZj/MLS
+        vwAADr8BOAVTJAAADslJREFUeF7t3cuO1dYCRVH+/w95CAhI4aEIqCoIolVXvp00YilAsc48UUZj/MLS
         tLa9/ejx48f3AADwqwlNAAAmhCYAABNCEwCACaEJAMCE0AQAYEJoAgAwITQBAJgQmgAATAhNAAAmhCYA
         ABNCEwCACaEJAMCE0AQAYEJoAgAwITQBAJgQmgAATAhNAAAmhCYAABNCEwCACaEJAMCE0AQAYEJoAgAw
         ITQBAJgQmgAATAhNAAAmhCYAABNCEwCACaEJAMCE0AQAYEJoAgAwITQBAJgQmgAATAhNAAAmhCYAABNC

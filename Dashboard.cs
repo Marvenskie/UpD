@@ -109,9 +109,9 @@ namespace Bas_DATSYS_IT505
         private void LoadTeacherChart()
         {
             string sqlQuery = "SELECT Status, COUNT(*) AS TotalCount " +
-                      "FROM Profiles " +
-                      "WHERE ProfileID IN (SELECT ProfileID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE RoleName = 'Instructor')) " +
-                      "GROUP BY Status";
+                       "FROM Profiles " +
+                       "WHERE ProfileID IN (SELECT ProfileID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE RoleName = 'Instructor')) " +
+                       "GROUP BY Status";
 
             using (SqlConnection conn = new SqlConnection(connectionstring))
             {
@@ -156,29 +156,37 @@ namespace Bas_DATSYS_IT505
         {
 
             string sqlQuery_TotalStudentCount = "SELECT COUNT(p.ProfileID) " +
-                                          "FROM Profiles AS p " +
-                                          "INNER JOIN Users AS u ON p.ProfileID = u.ProfileID " +
-                                          "INNER JOIN Roles AS r ON u.RoleID = r.RoleID " +
-                                          "WHERE r.RoleName = 'Student'";
+                                           "FROM Profiles AS p " +
+                                           "INNER JOIN Users AS u ON p.ProfileID = u.ProfileID " +
+                                           "INNER JOIN Roles AS r ON u.RoleID = r.RoleID " +
+                                           "WHERE r.RoleName = 'Student' AND p.Status = 'Active'";
 
             string sqlQuery_TotalTeacherCount = "SELECT COUNT(p.ProfileID) " +
                                           "FROM Profiles AS p " +
                                           "INNER JOIN Users AS u ON p.ProfileID = u.ProfileID " +
                                           "INNER JOIN Roles AS r ON u.RoleID = r.RoleID " +
-                                          "WHERE r.RoleName = 'Instructor'";
+                                          "WHERE r.RoleName = 'Instructor' AND p.Status = 'Active'";
+
+            string sqlQuery_TotalSubjectCount = "SELECT COUNT(CourseID)" +
+                                                "FROM Courses " +
+                                                "WHERE Status = 'Active'";
 
             using (SqlConnection conn = new SqlConnection(connectionstring))
             {
 
                 conn.Open();
 
-                SqlCommand countCmd = new SqlCommand(sqlQuery_TotalStudentCount, conn);
-                int StudentCount = (int)countCmd.ExecuteScalar();
+                SqlCommand countStudentcmd = new SqlCommand(sqlQuery_TotalStudentCount, conn);
+                int StudentCount = (int)countStudentcmd.ExecuteScalar();
                 lblSTudCount.Text = StudentCount.ToString();
 
-                SqlCommand countCMD = new SqlCommand(sqlQuery_TotalTeacherCount, conn);
-                int TeacherCount = (int)countCMD.ExecuteScalar();
+                SqlCommand countTeachercmd = new SqlCommand(sqlQuery_TotalTeacherCount, conn);
+                int TeacherCount = (int)countTeachercmd.ExecuteScalar();
                 lblTeacHCount.Text = TeacherCount.ToString();
+
+                SqlCommand countSubjectcmd = new SqlCommand(sqlQuery_TotalSubjectCount, conn);
+                int SubjectCount = (int)countSubjectcmd.ExecuteScalar();
+                lblSubjecTCount.Text = SubjectCount.ToString();
             }
         }
 

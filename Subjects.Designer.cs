@@ -334,8 +334,9 @@
             this.pnlUpdSub.Controls.Add(this.txtCourseCode);
             this.pnlUpdSub.Controls.Add(this.txtCourse);
             this.pnlUpdSub.Controls.Add(this.panel2);
+            this.pnlUpdSub.Dock = System.Windows.Forms.DockStyle.Right;
             this.pnlUpdSub.ForeColor = System.Drawing.Color.Black;
-            this.pnlUpdSub.Location = new System.Drawing.Point(558, 81);
+            this.pnlUpdSub.Location = new System.Drawing.Point(615, 0);
             this.pnlUpdSub.Name = "pnlUpdSub";
             this.pnlUpdSub.Size = new System.Drawing.Size(324, 515);
             this.pnlUpdSub.TabIndex = 61;
@@ -523,6 +524,7 @@
             this.dgvSubjects.Name = "dgvSubjects";
             this.dgvSubjects.Size = new System.Drawing.Size(893, 184);
             this.dgvSubjects.TabIndex = 63;
+            this.dgvSubjects.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSubjects_CellClick);
             // 
             // Subjects
             // 
